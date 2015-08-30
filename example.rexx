@@ -18,13 +18,6 @@
 /* and create the file. That way the Pashua commands exist within           */
 /* the Rexx source file. Commands are between START_PASHUA_INPUT: and       */
 /* END_PASHUA_INPUT: labels                                                 */
-/* Tested using Regina 3.2 + 3.3 compiled with gcc                          */
-/* modified for Pashua 0.8.5 to handle cncl as returned variable 2004-05-30 */
-/* The Rexx code in this file was contributed by Bruce Woller               */
-
-/* Specify the encoding to use; in most cases, this will be "macroman" */
-/* (default), "utf8", or "latin1" (see documentation)*/
-encoding = "macroman"
 
 /* Find the application if we can */
 currentDirectory = pwd()||"/"
@@ -52,12 +45,11 @@ then DO
      say "Can't find Pashua Application"
      EXIT(1)
      END
-          
+
 /* create a path to the ApplIcon file based on the Pashua.app we are currently using */
 /* The Pashua package is distributed with a static link to Pashua.app in the Examples*/
 /* directory so strip that off if it exists and create a path to the .icon file      */
-iconPath = CHANGESTR("Examples/", pashuaPath, "")
-iconPath = CHANGESTR("/MacOS/Pashua",iconPath, "")||"/Resources/AppIcon.icns"
+iconPath = CHANGESTR("/MacOS/Pashua",pashuaPath, "")||"/Resources/AppIcon.icns"
 
 /* Create a tempfile that is guaranteed to be unqiue */
 "/usr/bin/mktemp /tmp/Pashua_XXXXXXXXXX" ' | rxqueue'
@@ -81,11 +73,11 @@ DO WHILE (SOURCELINE(i + 1) \= "END_PASHUA_INPUT:")
 	PARSE var line . body ' */' .
 	CALL LINEOUT fn, body;
     END;
-/* Dynamically insert the icon path (difficult to hard code this one)*/   
+/* Dynamically insert the icon path (difficult to hard code this one)*/
 CALL LINEOUT fn, "img.path =  "||iconPath
 
 /* OK let Pashua do it's thing */
-"'"pashuapath||"' -e "encoding||' 'fn ' | rxqueue'
+"'"pashuapath||"' "' 'fn ' | rxqueue'
 
 /* Remove the temp file */
 'rm 'fn
@@ -131,30 +123,29 @@ fileExists:
     cmd = 'test -s '||"'"fileName"'"
     trace off
     ADDRESS SYSTEM cmd
-    trace error 
+    trace error
     return(RC);
-    
+
 
 START_PASHUA_INPUT:
-/* # Set transparency: 0 is transparent, 1 is opaque */
-/* *.transparency=0.95 */
-/*  */
 /* # Set window title */
 /* *.title = Introducing Pashua */
 /*  */
 /* # Introductory text */
 /* tb.type = text */
-/* tb.default = Pashua is an application for generating dialog windows from programming languages which lack support for creating native GUIs on Mac OS X. Any information you enter in this example window will be returned to the calling script when you hit “OK”; if you decide to click “Cancel” or press “Esc” instead, no values will be returned.[return][return]This window demonstrates nine of the GUI widgets that are currently available. You can find a full list of all GUI elements and their corresponding attributes in the documentation that is included with Pashua. */
+/* tb.default = Pashua is an application for generating dialog windows from programming languages which lack support for creating native GUIs on Mac OS X. Any information you enter in this example window will be returned to the calling script when you hit ‚ÄúOK‚Äù; if you decide to click ‚ÄúCancel‚Äù or press ‚ÄúEsc‚Äù instead, no values will be returned.[return][return]This window shows nine of the UI element types that are available. You can find a full list of all GUI elements and their corresponding attributes in the documentation (‚ûî Help menu) that is included with Pashua. */
 /* tb.height = 276 */
 /* tb.width = 310 */
 /* tb.x = 340 */
 /* tb.y = 44 */
+/* tb.tooltip = This is an element of type ‚Äútext‚Äù */
 /*  */
 /* # Display Pashua's icon */
 /* img.type = image */
-/* img.x = 530 */
-/* img.y = 255 */
-/* # img.path = /Volumes/Data/Dev/Pashua2/build/Release/Pashua.app/Contents/Resources/AppIcon.icns */
+/* img.x = 435 */
+/* img.y = 248 */
+/* img.maxwidth = 128 */
+/* img.tooltip = This is an element of type ‚Äúimage‚Äù */
 /*  */
 /* # Add a text field */
 /* tx.type = textfield */
